@@ -5,25 +5,17 @@ import { Play, Pause, Download, Cpu, Music, Activity, AlertCircle, Zap, Radio, L
 import { motion } from 'framer-motion';
 
 // --- CONFIGURATION ---
-const API_URL = "https://ai.ravelian.com/generate"; // Verify this matches your backend
+const API_URL = "https://ai.ravelian.com/generate";
 
 // --- COMPONENTS ---
 
-/**
- * Technical Info Section
- * Expanded with deep-tech terminology (RVQ, CFG, etc.)
- */
 const TechnicalInfo = () => (
-  <div className="mt-12 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-md shadow-2xl">
-    {/* Decorative background element */}
-    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 rounded-full blur-3xl -z-10"></div>
-
-    <div className="p-8">
+  <div className="mt-12 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-900/40 backdrop-blur-md shadow-2xl">
+    <div className="p-8 relative z-10">
       <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
         <Cpu className="text-brand-accent" size={24} />
         Architecture & Research
       </h3>
-
       <div className="grid md:grid-cols-2 gap-8 text-sm leading-relaxed text-slate-300">
         <div className="space-y-6">
           <div>
@@ -45,7 +37,6 @@ const TechnicalInfo = () => (
             </p>
           </div>
         </div>
-
         <div className="space-y-6">
           <div>
             <h4 className="flex items-center gap-2 font-semibold text-brand-accent mb-2">
@@ -71,9 +62,6 @@ const TechnicalInfo = () => (
   </div>
 );
 
-/**
- * Waveform Player
- */
 const WavePlayer = ({ audioBlob, duration }) => {
   const containerRef = useRef(null);
   const wavesurferRef = useRef(null);
@@ -85,8 +73,8 @@ const WavePlayer = ({ audioBlob, duration }) => {
 
     const ws = WaveSurfer.create({
       container: containerRef.current,
-      waveColor: 'rgba(56, 189, 248, 0.3)', // brand-accent with opacity
-      progressColor: '#38bdf8', // brand-accent
+      waveColor: 'rgba(56, 189, 248, 0.3)',
+      progressColor: '#38bdf8',
       cursorColor: '#ffffff',
       barWidth: 3,
       barGap: 3,
@@ -134,9 +122,6 @@ const WavePlayer = ({ audioBlob, duration }) => {
       animate={{ opacity: 1, y: 0 }}
       className="bg-slate-900/60 backdrop-blur-md rounded-xl p-6 border border-brand-accent/20 shadow-2xl relative group"
     >
-      {/* Glow effect behind player */}
-      <div className="absolute inset-0 bg-brand-accent/5 rounded-xl blur-xl -z-10 transition-opacity group-hover:bg-brand-accent/10"></div>
-
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-brand-accent/10 rounded-xl border border-brand-accent/20">
@@ -180,7 +165,6 @@ function App() {
   const [formData, setFormData] = useState({
     prompt: '',
     duration: 10,
-    // loudness_norm is handled implicitly in submission
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -195,11 +179,7 @@ function App() {
     setError(null);
     setAudioResult(null);
 
-    // Prepare payload with implicit loudness_norm
-    const payload = {
-      ...formData,
-      loudness_norm: true
-    };
+    const payload = { ...formData, loudness_norm: true };
 
     try {
       const response = await axios.post(API_URL, payload, {
@@ -220,24 +200,34 @@ function App() {
   return (
     <div className="min-h-screen bg-brand-dark text-slate-200 selection:bg-brand-accent/30 selection:text-brand-accent relative overflow-x-hidden">
 
-      {/* --- BACKGROUND EFFECTS --- */}
-      {/* 1. Gradient Mesh */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse-fast"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-brand-accent/10 rounded-full blur-[120px]"></div>
-      </div>
-      {/* 2. Grid Pattern Overlay */}
-      <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 -z-10"></div>
+      {/* --- NEW CREATIVE BACKGROUND START --- */}
+      <div className="fixed inset-0 bg-brand-dark -z-50" />
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      {/* Moving Blobs (The "Living" Aurora) */}
+      <div className="fixed inset-0 overflow-hidden -z-40 pointer-events-none">
+        {/* Purple Orb */}
+        <div className="absolute top-0 left-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob"></div>
+        {/* Blue/Cyan Orb */}
+        <div className="absolute top-0 right-[-10%] w-[500px] h-[500px] bg-brand-accent/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob animation-delay-2000"></div>
+        {/* Pink Orb (Bottom) */}
+        <div className="absolute -bottom-32 left-[20%] w-[500px] h-[500px] bg-pink-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Grid Pattern with Vignette */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] -z-30"></div>
+      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-brand-dark/50 to-brand-dark -z-20"></div>
+      {/* --- BACKGROUND END --- */}
+
+
+      <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
 
         {/* Header */}
         <header className="mb-16 text-center relative">
-          <div className="inline-block px-3 py-1 mb-4 border border-brand-accent/30 rounded-full bg-brand-accent/5 backdrop-blur-sm">
+          <div className="inline-block px-3 py-1 mb-4 border border-brand-accent/30 rounded-full bg-brand-accent/5 backdrop-blur-sm shadow-[0_0_15px_rgba(56,189,248,0.3)]">
             <span className="text-xs font-bold text-brand-accent tracking-widest uppercase">Generative Audio AI</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 mb-6 tracking-tight drop-shadow-sm">
-            Text to Music
+          <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight drop-shadow-2xl">
+            Text to <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-purple-400">Music</span>
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
             Generate high-fidelity audio samples conditioned on text descriptions using
@@ -247,32 +237,29 @@ function App() {
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
 
-          {/* Left Column: Input Form (4 cols) */}
+          {/* Left Column: Input Form */}
           <div className="lg:col-span-4">
-            <form onSubmit={handleSubmit} className="bg-slate-900/80 backdrop-blur-xl p-6 rounded-2xl border border-slate-700/50 shadow-2xl sticky top-8">
+            <form onSubmit={handleSubmit} className="bg-slate-900/60 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-2xl sticky top-8 hover:border-brand-accent/30 transition-colors">
               <div className="space-y-8">
-
-                {/* Prompt Input */}
                 <div>
                   <label className="flex items-center justify-between text-sm font-bold text-slate-300 mb-2 uppercase tracking-wider">
                     <span>Sonic Description</span>
-                    <span className="text-xs text-slate-500 font-normal">Required</span>
+                    <span className="text-xs text-brand-accent/70 font-normal">Required</span>
                   </label>
                   <textarea
                     value={formData.prompt}
                     onChange={(e) => setFormData({...formData, prompt: e.target.value})}
                     placeholder="e.g. An 80s synthwave track with driving bass and neon atmosphere..."
-                    className="w-full h-40 px-4 py-4 bg-slate-950/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-accent/50 focus:border-brand-accent/50 outline-none text-sm resize-none transition-all placeholder:text-slate-600 leading-relaxed text-slate-200"
+                    className="w-full h-40 px-4 py-4 bg-black/40 border border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-accent/50 focus:border-brand-accent/50 outline-none text-sm resize-none transition-all placeholder:text-slate-600 leading-relaxed text-slate-200 shadow-inner"
                     maxLength={500}
                     required
                   />
                 </div>
 
-                {/* Duration Slider */}
                 <div>
                   <div className="flex justify-between text-sm mb-3">
                     <label className="font-bold text-slate-300 uppercase tracking-wider">Duration</label>
-                    <span className="text-brand-accent font-mono bg-brand-accent/10 px-2 py-0.5 rounded text-xs">
+                    <span className="text-brand-accent font-mono bg-brand-accent/10 px-2 py-0.5 rounded text-xs border border-brand-accent/20">
                       {formData.duration}s
                     </span>
                   </div>
@@ -292,14 +279,13 @@ function App() {
                   </div>
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
                   className={`w-full py-4 px-6 rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-xl
                     ${loading
                       ? 'bg-slate-800 cursor-not-allowed text-slate-500 border border-slate-700'
-                      : 'bg-brand-accent hover:bg-brand-glow text-brand-dark shadow-brand-accent/20 hover:shadow-brand-accent/40 hover:-translate-y-0.5'
+                      : 'bg-gradient-to-r from-brand-accent to-brand-glow hover:from-brand-accent hover:to-cyan-400 text-brand-dark shadow-brand-accent/20 hover:shadow-brand-accent/40 hover:-translate-y-0.5'
                     }`}
                 >
                   {loading ? (
@@ -314,16 +300,17 @@ function App() {
             </form>
           </div>
 
-          {/* Right Column: Results & Info (8 cols) */}
+          {/* Right Column: Results & Info */}
           <div className="lg:col-span-8 space-y-8">
-
-            {/* Loading State */}
             {loading && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-slate-900/50 backdrop-blur-sm rounded-xl p-12 text-center border border-slate-800 border-dashed"
+                className="bg-slate-900/50 backdrop-blur-sm rounded-xl p-12 text-center border border-brand-accent/20 border-dashed relative overflow-hidden"
               >
+                {/* Scanner effect */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-brand-accent/50 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-[scan_2s_ease-in-out_infinite]"></div>
+
                 <div className="relative w-20 h-20 mx-auto mb-8">
                   <div className="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
                   <div className="absolute inset-0 border-4 border-t-brand-accent border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
@@ -352,7 +339,6 @@ function App() {
               </motion.div>
             )}
 
-            {/* Error State */}
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -369,16 +355,14 @@ function App() {
               </motion.div>
             )}
 
-            {/* Audio Player Result */}
             {!loading && audioResult && (
               <WavePlayer audioBlob={audioResult} duration={generatedDuration} />
             )}
 
-            {/* Placeholder when idle */}
             {!loading && !audioResult && !error && (
-              <div className="bg-slate-900/30 backdrop-blur-sm rounded-xl p-16 text-center border border-slate-800/50">
-                <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Music size={32} className="text-slate-600" />
+              <div className="bg-slate-900/40 backdrop-blur-sm rounded-xl p-16 text-center border border-white/5 hover:border-white/10 transition-colors">
+                <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                  <Music size={32} className="text-slate-500" />
                 </div>
                 <h3 className="text-lg font-medium text-slate-300">Ready to Generate</h3>
                 <p className="text-slate-500 text-sm mt-2 max-w-xs mx-auto">
