@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import WaveSurfer from 'wavesurfer.js';
-import { Play, Pause, Download, Cpu, Music, Activity, AlertCircle, Layers, Zap, Radio, Settings, Database } from 'lucide-react';
+import { Play, Pause, Download, Cpu, Music, Activity, AlertCircle, Layers, Zap, Radio, Settings, Database, Terminal } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // --- CONFIGURATION ---
@@ -62,57 +62,60 @@ const TechnicalInfo = () => (
         Architecture & Research
       </h3>
 
-      <div className="grid md:grid-cols-2 gap-8 text-sm leading-relaxed text-slate-300 mb-8">
-        <div className="space-y-6">
-          <div>
-            <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-2">
-              <Layers size={16} />
-              Neural Audio Compression (EnCodec)
-            </h4>
-            {/* Added text-justify for better readability */}
-            <p className="text-slate-400 text-justify">
-              Raw audio is continuous and high-dimensional (44.1kHz). To model it effectively, we use <strong>EnCodec</strong>, a convolutional autoencoder that compresses audio into discrete latent codes using <strong>Residual Vector Quantization (RVQ)</strong>.
-            </p>
-          </div>
-          <div>
-            <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-2">
-              <Zap size={16} />
-              Autoregressive Transformer
-            </h4>
-            {/* Added text-justify for better readability */}
-            <p className="text-slate-400 text-justify">
-              The core is a <strong>Decoder-only Transformer</strong>. It predicts the next audio codebook pattern based on the history of previous tokens. By flattening the multi-codebook structure, the model learns melodic structure and acoustic details simultaneously.
-            </p>
-          </div>
+      {/* LAYOUT FIX: Changed to a direct grid (md:grid-cols-2).
+         This ensures Row 1 items match height, and Row 2 items start at the exact same vertical line.
+      */}
+      <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 text-sm leading-relaxed text-slate-300 mb-10">
+
+        {/* Item 1 */}
+        <div>
+          <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
+            <Layers size={16} />
+            Neural Audio Compression
+          </h4>
+          <p className="text-slate-400">
+            Raw audio is continuous and high-dimensional (44.1kHz). To model it effectively, we use <strong>EnCodec</strong>, a convolutional autoencoder that compresses audio into discrete latent codes using <strong>Residual Vector Quantization (RVQ)</strong>.
+          </p>
         </div>
-        <div className="space-y-6">
-          <div>
-            <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-2">
-              <Radio size={16} />
-              Conditioning & Guidance
-            </h4>
-            {/* Added text-justify for better readability */}
-            <p className="text-slate-400 text-justify">
-              Text prompts are embedded using a frozen <strong>T5 Text Encoder</strong>. These embeddings cross-attend with the audio tokens during generation. We utilize <strong>Classifier-Free Guidance (CFG)</strong> to strictly adhere to your prompt.
-            </p>
-          </div>
-          {/* Added new fourth paragraph to fill space and provide more info */}
-          <div>
-            <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-2">
-              <Database size={16} />
-              Large-Scale Training Data
-            </h4>
-            <p className="text-slate-400 text-justify">
-              The model is trained on 20,000 hours of licensed music, allowing it to learn a vast and diverse range of musical genres, instruments, and styles. This extensive dataset is key to its ability to generate high-quality, coherent, and musically rich audio from text descriptions.
-            </p>
-          </div>
+
+        {/* Item 2 */}
+        <div>
+          <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
+            <Zap size={16} />
+            Autoregressive Transformer
+          </h4>
+          <p className="text-slate-400">
+            The core is a <strong>Decoder-only Transformer</strong>. It predicts the next audio codebook pattern based on the history of previous tokens. By flattening the multi-codebook structure, the model learns melodic structure and acoustic details simultaneously.
+          </p>
         </div>
+
+        {/* Item 3 */}
+        <div>
+          <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
+            <Radio size={16} />
+            Conditioning & Guidance
+          </h4>
+          <p className="text-slate-400">
+            Text prompts are embedded using a frozen <strong>T5 Text Encoder</strong>. These embeddings cross-attend with the audio tokens during generation. We utilize <strong>Classifier-Free Guidance (CFG)</strong> to strictly adhere to your prompt.
+          </p>
+        </div>
+
+        {/* Item 4 */}
+        <div>
+          <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
+            <Database size={16} />
+            Large-Scale Training Data
+          </h4>
+          <p className="text-slate-400">
+            The model is trained on 20,000 hours of licensed music, allowing it to learn a vast and diverse range of musical genres, instruments, and styles. This extensive dataset is key to its ability to generate high-quality, coherent audio.
+          </p>
+        </div>
+
       </div>
 
-      {/* --- UPDATED HEADER & ICON --- */}
+      {/* --- INFERENCE SPECS SECTION --- */}
       <div className="border-t border-white/5 pt-6">
         <div className="flex items-center gap-2 mb-4 text-xs font-bold text-indigo-400 uppercase tracking-widest">
-           {/* Changed icon to Settings and title to Technical Specifications */}
            <Settings size={14} />
            <span>Technical Specifications</span>
         </div>
