@@ -1,52 +1,71 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import WaveSurfer from 'wavesurfer.js';
-import { Play, Pause, Download, Volume2, Cpu, Music, Activity, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Pause, Download, Cpu, Music, Activity, AlertCircle, Zap, Radio, Layers } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 // --- CONFIGURATION ---
-// REPLACE THIS with your actual local backend URL if different
-const API_URL = "https://ai.ravelian.com/generate";
+const API_URL = "https://ai.ravelian.com/generate"; // Verify this matches your backend
 
 // --- COMPONENTS ---
 
 /**
  * Technical Info Section
- * Explains how MusicGen works to showcase technical knowledge.
+ * Expanded with deep-tech terminology (RVQ, CFG, etc.)
  */
 const TechnicalInfo = () => (
-  <div className="mt-12 p-6 bg-brand-card rounded-xl border border-slate-700/50 shadow-lg">
-    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-      <Cpu className="text-brand-accent" size={20} />
-      How It Works: The MusicGen Architecture
-    </h3>
-    <div className="grid md:grid-cols-2 gap-6 text-sm text-slate-300">
-      <div>
-        <h4 className="font-semibold text-brand-accent mb-2">Audio Tokenization (EnCodec)</h4>
-        <p className="mb-4">
-          Unlike traditional audio generation that works on raw spectrograms, this system uses
-          Facebook's <strong>EnCodec</strong> neural audio codec. It compresses raw audio into distinct
-          discrete codes (tokens), similar to how LLMs process text tokens.
-        </p>
-        <h4 className="font-semibold text-brand-accent mb-2">Transformer Decoder</h4>
-        <p>
-          The core is a single-stage <strong>Transformer Language Model</strong>. It takes your text prompt
-          and predicts the audio tokens autoregressively. It models the audio structure (melody, rhythm)
-          simultaneously across multiple codebooks.
-        </p>
-      </div>
-      <div>
-        <h4 className="font-semibold text-brand-accent mb-2">Conditioning</h4>
-        <p className="mb-4">
-          The text prompt is processed via a T5 text encoder. This embedding conditions the Transformer,
-          steering the generation probabilities towards the desired musical style and instrumentation.
-        </p>
-        <h4 className="font-semibold text-brand-accent mb-2">Technical Specs</h4>
-        <ul className="list-disc pl-5 space-y-1 text-slate-400">
-          <li><strong>Sampling Rate:</strong> 32kHz</li>
-          <li><strong>Architecture:</strong> Autoregressive Transformer</li>
-          <li><strong>Post-processing:</strong> Loudness Normalization (-14 LUFS)</li>
-        </ul>
+  <div className="mt-12 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-md shadow-2xl">
+    {/* Decorative background element */}
+    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 rounded-full blur-3xl -z-10"></div>
+
+    <div className="p-8">
+      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <Cpu className="text-brand-accent" size={24} />
+        Architecture & Research
+      </h3>
+
+      <div className="grid md:grid-cols-2 gap-8 text-sm leading-relaxed text-slate-300">
+        <div className="space-y-6">
+          <div>
+            <h4 className="flex items-center gap-2 font-semibold text-brand-accent mb-2">
+              <Layers size={16} />
+              Neural Audio Compression (EnCodec)
+            </h4>
+            <p className="text-slate-400">
+              Raw audio is continuous and high-dimensional (44.1kHz). To model it effectively, we use <strong>EnCodec</strong>, a convolutional autoencoder that compresses audio into discrete latent codes using <strong>Residual Vector Quantization (RVQ)</strong>. This allows the model to predict multiple parallel streams of "audio tokens" rather than raw waveforms.
+            </p>
+          </div>
+          <div>
+            <h4 className="flex items-center gap-2 font-semibold text-brand-accent mb-2">
+              <Zap size={16} />
+              Autoregressive Transformer
+            </h4>
+            <p className="text-slate-400">
+              The core is a <strong>Decoder-only Transformer</strong> (similar to GPT-4). It predicts the next audio codebook pattern based on the history of previous tokens. By flattening the multi-codebook structure, the model learns both the coarse melodic structure and fine acoustic details simultaneously.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <h4 className="flex items-center gap-2 font-semibold text-brand-accent mb-2">
+              <Radio size={16} />
+              Conditioning & Guidance
+            </h4>
+            <p className="text-slate-400">
+              Text prompts are embedded using a frozen <strong>T5 Text Encoder</strong>. These embeddings cross-attend with the audio tokens during generation. We utilize <strong>Classifier-Free Guidance (CFG)</strong> during inference to strictly adhere to your prompt, trading off diversity for higher fidelity and prompt alignment.
+            </p>
+          </div>
+           <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50">
+            <h4 className="font-semibold text-white mb-2 text-xs uppercase tracking-wider">Inference Specs</h4>
+            <ul className="grid grid-cols-2 gap-y-2 text-xs text-slate-400">
+              <li>• Model: Meta MusicGen Small/Medium</li>
+              <li>• Context Window: 30s (Autoregressive)</li>
+              <li>• Sampling Rate: 32kHz</li>
+              <li>• Vocoder: EnCodec Decoder</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -54,7 +73,6 @@ const TechnicalInfo = () => (
 
 /**
  * Waveform Player
- * Handles visualization, playing, pausing, and downloading.
  */
 const WavePlayer = ({ audioBlob, duration }) => {
   const containerRef = useRef(null);
@@ -65,25 +83,21 @@ const WavePlayer = ({ audioBlob, duration }) => {
   useEffect(() => {
     if (!containerRef.current || !audioBlob) return;
 
-    // Create WaveSurfer instance
     const ws = WaveSurfer.create({
       container: containerRef.current,
-      waveColor: '#334155',
-      progressColor: '#38bdf8',
+      waveColor: 'rgba(56, 189, 248, 0.3)', // brand-accent with opacity
+      progressColor: '#38bdf8', // brand-accent
       cursorColor: '#ffffff',
-      barWidth: 2,
+      barWidth: 3,
       barGap: 3,
       barRadius: 3,
-      height: 80,
+      height: 96,
       normalize: true,
       backend: 'WebAudio',
     });
 
-    // Load blob
     ws.loadBlob(audioBlob);
 
-    // Event listeners
-    ws.on('ready', () => console.log('Waveform ready'));
     ws.on('play', () => setIsPlaying(true));
     ws.on('pause', () => setIsPlaying(false));
     ws.on('audioprocess', (t) => setCurrentTime(t));
@@ -95,15 +109,13 @@ const WavePlayer = ({ audioBlob, duration }) => {
     return () => ws.destroy();
   }, [audioBlob]);
 
-  const handlePlayPause = () => {
-    wavesurferRef.current?.playPause();
-  };
+  const handlePlayPause = () => wavesurferRef.current?.playPause();
 
   const handleDownload = () => {
     const url = URL.createObjectURL(audioBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `generated_music_${Date.now()}.wav`;
+    a.download = `musicgen_${Date.now()}.wav`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -120,37 +132,42 @@ const WavePlayer = ({ audioBlob, duration }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-brand-card rounded-xl p-6 border border-slate-700 shadow-2xl"
+      className="bg-slate-900/60 backdrop-blur-md rounded-xl p-6 border border-brand-accent/20 shadow-2xl relative group"
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-brand-accent/10 rounded-lg">
+      {/* Glow effect behind player */}
+      <div className="absolute inset-0 bg-brand-accent/5 rounded-xl blur-xl -z-10 transition-opacity group-hover:bg-brand-accent/10"></div>
+
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-brand-accent/10 rounded-xl border border-brand-accent/20">
             <Music className="text-brand-accent" size={24} />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Generated Track</h3>
-            <p className="text-xs text-slate-400">MusicGen • {duration}s • 32kHz</p>
+            <h3 className="text-lg font-bold text-white tracking-wide">Generated Track</h3>
+            <p className="text-xs text-brand-accent/80 font-mono uppercase tracking-wider">AI Generated • {duration}s</p>
           </div>
         </div>
         <button
           onClick={handleDownload}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all border border-slate-700 hover:border-slate-600"
         >
-          <Download size={14} /> Download WAV
+          <Download size={14} /> DOWNLOAD WAV
         </button>
       </div>
 
-      <div ref={containerRef} className="w-full mb-4 cursor-pointer" />
+      <div ref={containerRef} className="w-full mb-6 cursor-pointer" />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <button
           onClick={handlePlayPause}
-          className="flex items-center justify-center w-12 h-12 bg-brand-accent hover:bg-brand-glow text-brand-dark rounded-full transition-all shadow-lg shadow-brand-accent/20"
+          className="flex items-center justify-center w-14 h-14 bg-brand-accent hover:bg-brand-glow text-brand-dark rounded-full transition-all shadow-lg shadow-brand-accent/25 hover:scale-105 active:scale-95"
         >
-          {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
+          {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
         </button>
         <div className="font-mono text-sm text-slate-400">
-          {formatTime(currentTime)} / {formatTime(duration)}
+          <span className="text-white">{formatTime(currentTime)}</span>
+          <span className="mx-2 text-slate-600">/</span>
+          {formatTime(duration)}
         </div>
       </div>
     </motion.div>
@@ -163,7 +180,7 @@ function App() {
   const [formData, setFormData] = useState({
     prompt: '',
     duration: 10,
-    loudness_norm: true
+    // loudness_norm is handled implicitly in submission
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -178,53 +195,74 @@ function App() {
     setError(null);
     setAudioResult(null);
 
+    // Prepare payload with implicit loudness_norm
+    const payload = {
+      ...formData,
+      loudness_norm: true
+    };
+
     try {
-      // NOTE: Axios responseType must be 'blob' for binary files
-      const response = await axios.post(API_URL, formData, {
+      const response = await axios.post(API_URL, payload, {
         responseType: 'blob',
-        timeout: 300000, // 5 minutes timeout (generation is slow)
+        timeout: 300000,
       });
 
       setAudioResult(response.data);
       setGeneratedDuration(formData.duration);
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.detail || "Failed to generate audio. Ensure the backend is running.");
+      setError(err.response?.data?.detail || "Connection failed. Please ensure the backend is running.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-brand-dark text-slate-200 selection:bg-brand-accent/30 selection:text-brand-accent">
-      <div className="max-w-4xl mx-auto px-6 py-12">
+    <div className="min-h-screen bg-brand-dark text-slate-200 selection:bg-brand-accent/30 selection:text-brand-accent relative overflow-x-hidden">
+
+      {/* --- BACKGROUND EFFECTS --- */}
+      {/* 1. Gradient Mesh */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-20">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse-fast"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-brand-accent/10 rounded-full blur-[120px]"></div>
+      </div>
+      {/* 2. Grid Pattern Overlay */}
+      <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 -z-10"></div>
+
+      <div className="max-w-5xl mx-auto px-6 py-12">
 
         {/* Header */}
-        <header className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-purple-400 mb-4 tracking-tight">
-            AI Music Generator
+        <header className="mb-16 text-center relative">
+          <div className="inline-block px-3 py-1 mb-4 border border-brand-accent/30 rounded-full bg-brand-accent/5 backdrop-blur-sm">
+            <span className="text-xs font-bold text-brand-accent tracking-widest uppercase">Generative Audio AI</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 mb-6 tracking-tight drop-shadow-sm">
+            Text to Music
           </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Generate high-fidelity music samples from text descriptions using
-            Meta's <span className="text-brand-accent font-medium">MusicGen</span> model.
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            Generate high-fidelity audio samples conditioned on text descriptions using
+            Meta's <span className="text-white font-medium">MusicGen</span> transformer model.
           </p>
         </header>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
 
-          {/* Left Column: Input Form */}
-          <div className="lg:col-span-1">
-            <form onSubmit={handleSubmit} className="bg-brand-card p-6 rounded-xl border border-slate-700 shadow-xl sticky top-6">
-              <div className="space-y-6">
+          {/* Left Column: Input Form (4 cols) */}
+          <div className="lg:col-span-4">
+            <form onSubmit={handleSubmit} className="bg-slate-900/80 backdrop-blur-xl p-6 rounded-2xl border border-slate-700/50 shadow-2xl sticky top-8">
+              <div className="space-y-8">
 
                 {/* Prompt Input */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Prompt</label>
+                  <label className="flex items-center justify-between text-sm font-bold text-slate-300 mb-2 uppercase tracking-wider">
+                    <span>Sonic Description</span>
+                    <span className="text-xs text-slate-500 font-normal">Required</span>
+                  </label>
                   <textarea
                     value={formData.prompt}
                     onChange={(e) => setFormData({...formData, prompt: e.target.value})}
-                    placeholder="Lo-fi hip hop beat with jazz piano..."
-                    className="w-full h-32 px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none text-sm resize-none transition-all placeholder:text-slate-600"
+                    placeholder="e.g. An 80s synthwave track with driving bass and neon atmosphere..."
+                    className="w-full h-40 px-4 py-4 bg-slate-950/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-accent/50 focus:border-brand-accent/50 outline-none text-sm resize-none transition-all placeholder:text-slate-600 leading-relaxed text-slate-200"
                     maxLength={500}
                     required
                   />
@@ -232,80 +270,83 @@ function App() {
 
                 {/* Duration Slider */}
                 <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <label className="font-medium text-slate-300">Duration</label>
-                    <span className="text-brand-accent font-mono">{formData.duration}s</span>
+                  <div className="flex justify-between text-sm mb-3">
+                    <label className="font-bold text-slate-300 uppercase tracking-wider">Duration</label>
+                    <span className="text-brand-accent font-mono bg-brand-accent/10 px-2 py-0.5 rounded text-xs">
+                      {formData.duration}s
+                    </span>
                   </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="30" // Keeping it safe for demo, backend caps at 300
-                    value={formData.duration}
-                    onChange={(e) => setFormData({...formData, duration: parseInt(e.target.value)})}
-                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-accent"
-                  />
-                  <div className="flex justify-between text-xs text-slate-500 mt-1">
-                    <span>1s</span>
-                    <span>30s</span>
+                  <div className="relative flex items-center h-4">
+                    <input
+                      type="range"
+                      min="1"
+                      max="30"
+                      value={formData.duration}
+                      onChange={(e) => setFormData({...formData, duration: parseInt(e.target.value)})}
+                      className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-accent relative z-10"
+                    />
                   </div>
-                </div>
-
-                {/* Loudness Toggle */}
-                <div className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700/50">
-                  <div className="flex items-center gap-2">
-                    <Volume2 size={16} className="text-slate-400"/>
-                    <span className="text-sm text-slate-300">Normalize Audio</span>
+                  <div className="flex justify-between text-[10px] uppercase font-bold text-slate-600 mt-2">
+                    <span>1 Sec</span>
+                    <span>30 Sec (Max)</span>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={formData.loudness_norm}
-                    onChange={(e) => setFormData({...formData, loudness_norm: e.target.checked})}
-                    className="w-4 h-4 rounded border-slate-600 text-brand-accent focus:ring-brand-accent bg-slate-700"
-                  />
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3 px-4 rounded-lg font-bold text-sm tracking-wide transition-all shadow-lg
+                  className={`w-full py-4 px-6 rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-xl
                     ${loading
-                      ? 'bg-slate-700 cursor-not-allowed text-slate-400'
-                      : 'bg-gradient-to-r from-brand-accent to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white shadow-brand-accent/25'
+                      ? 'bg-slate-800 cursor-not-allowed text-slate-500 border border-slate-700'
+                      : 'bg-brand-accent hover:bg-brand-glow text-brand-dark shadow-brand-accent/20 hover:shadow-brand-accent/40 hover:-translate-y-0.5'
                     }`}
                 >
                   {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Activity className="animate-spin" size={16} /> Generating...
+                    <span className="flex items-center justify-center gap-3">
+                      <Activity className="animate-spin" size={18} /> Processing...
                     </span>
                   ) : (
-                    "Generate Music"
+                    "Generate Audio"
                   )}
                 </button>
               </div>
             </form>
           </div>
 
-          {/* Right Column: Results & Info */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Right Column: Results & Info (8 cols) */}
+          <div className="lg:col-span-8 space-y-8">
 
             {/* Loading State */}
             {loading && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-brand-card rounded-xl p-12 text-center border border-slate-700 border-dashed"
+                className="bg-slate-900/50 backdrop-blur-sm rounded-xl p-12 text-center border border-slate-800 border-dashed"
               >
-                <div className="inline-block relative">
-                  <div className="w-16 h-16 border-4 border-slate-700 border-t-brand-accent rounded-full animate-spin"></div>
+                <div className="relative w-20 h-20 mx-auto mb-8">
+                  <div className="absolute inset-0 border-4 border-slate-800 rounded-full"></div>
+                  <div className="absolute inset-0 border-4 border-t-brand-accent border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
                 </div>
-                <h3 className="text-xl font-bold text-white mt-6">Composing your track</h3>
-                <p className="text-slate-400 mt-2 text-sm">
-                  Inference takes time. The Transformer is predicting audio tokens...
+                <h3 className="text-xl font-bold text-white mb-2">Generating Audio Tokens</h3>
+                <p className="text-slate-500 text-sm mb-6">
+                  Running autoregressive inference on GPU...
                 </p>
-                <div className="mt-4 flex justify-center gap-1">
-                   {[...Array(5)].map((_, i) => (
-                     <div key={i} className="w-1 h-8 bg-brand-accent/50 rounded-full animate-pulse" style={{animationDelay: `${i * 0.1}s`}}></div>
+                <div className="flex justify-center gap-1.5 h-8 items-center">
+                   {[...Array(8)].map((_, i) => (
+                     <motion.div
+                       key={i}
+                       className="w-1 bg-brand-accent rounded-full"
+                       animate={{
+                         height: [10, 32, 10],
+                         opacity: [0.3, 1, 0.3]
+                       }}
+                       transition={{
+                         duration: 1,
+                         repeat: Infinity,
+                         delay: i * 0.1
+                       }}
+                     />
                    ))}
                 </div>
               </motion.div>
@@ -313,13 +354,19 @@ function App() {
 
             {/* Error State */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-lg flex items-start gap-3">
-                <AlertCircle size={20} className="mt-0.5 shrink-0" />
-                <div>
-                  <h4 className="font-bold">Generation Failed</h4>
-                  <p className="text-sm opacity-90">{error}</p>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl flex items-start gap-4"
+              >
+                <div className="p-2 bg-red-500/20 rounded-lg text-red-400">
+                  <AlertCircle size={24} />
                 </div>
-              </div>
+                <div>
+                  <h4 className="font-bold text-red-200">Generation Error</h4>
+                  <p className="text-sm text-red-200/70 mt-1">{error}</p>
+                </div>
+              </motion.div>
             )}
 
             {/* Audio Player Result */}
@@ -329,9 +376,14 @@ function App() {
 
             {/* Placeholder when idle */}
             {!loading && !audioResult && !error && (
-              <div className="bg-brand-card/50 rounded-xl p-12 text-center border border-slate-800 text-slate-500">
-                <Music size={48} className="mx-auto mb-4 opacity-20" />
-                <p>Enter a prompt and click generate to create music.</p>
+              <div className="bg-slate-900/30 backdrop-blur-sm rounded-xl p-16 text-center border border-slate-800/50">
+                <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Music size={32} className="text-slate-600" />
+                </div>
+                <h3 className="text-lg font-medium text-slate-300">Ready to Generate</h3>
+                <p className="text-slate-500 text-sm mt-2 max-w-xs mx-auto">
+                  Describe the music you want to hear, set the duration, and let the AI compose it.
+                </p>
               </div>
             )}
 
