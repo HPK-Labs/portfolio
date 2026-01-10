@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import WaveSurfer from 'wavesurfer.js';
-import { Play, Pause, Download, Cpu, Music, Activity, AlertCircle, Layers, Zap, Radio, Settings, Database, Terminal } from 'lucide-react';
+import { Play, Pause, Download, Cpu, Music, Activity, AlertCircle, Layers, Zap, Radio, Settings, Database, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // --- CONFIGURATION ---
@@ -14,6 +14,12 @@ const styles = `
     33% { transform: translate(30px, -50px) scale(1.1); }
     66% { transform: translate(-20px, 20px) scale(0.9); }
     100% { transform: translate(0px, 0px) scale(1); }
+  }
+
+  @keyframes equalize {
+    0% { height: 10%; }
+    50% { height: 100%; }
+    100% { height: 10%; }
   }
 
   .blob {
@@ -32,7 +38,7 @@ const styles = `
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
 
-  /* Custom scrollbar for the textarea */
+  /* Custom scrollbar */
   textarea::-webkit-scrollbar {
     width: 8px;
   }
@@ -43,6 +49,19 @@ const styles = `
     background: rgba(99, 102, 241, 0.3);
     border-radius: 4px;
   }
+
+  /* Loading Bar Animation Classes */
+  .bar {
+    width: 6px;
+    background: #818cf8; /* Indigo-400 */
+    border-radius: 4px;
+    animation: equalize 1s infinite ease-in-out;
+  }
+  .bar:nth-child(1) { animation-delay: 0.0s; }
+  .bar:nth-child(2) { animation-delay: 0.2s; }
+  .bar:nth-child(3) { animation-delay: 0.4s; }
+  .bar:nth-child(4) { animation-delay: 0.1s; }
+  .bar:nth-child(5) { animation-delay: 0.3s; }
 `;
 
 // --- COMPONENTS ---
@@ -59,26 +78,19 @@ const TechnicalInfo = () => (
     <div className="p-8 relative z-10">
       <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
         <Cpu className="text-indigo-400" size={24} />
-        Architecture & Research
+        Architecture Details
       </h3>
 
-      {/* LAYOUT FIX: Changed to a direct grid (md:grid-cols-2).
-         This ensures Row 1 items match height, and Row 2 items start at the exact same vertical line.
-      */}
       <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 text-sm leading-relaxed text-slate-300 mb-10">
-
-        {/* Item 1 */}
         <div>
           <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
             <Layers size={16} />
             Neural Audio Compression
           </h4>
           <p className="text-slate-400">
-            Raw audio is continuous and high-dimensional (44.1kHz). To model it effectively, we use <strong>EnCodec</strong>, a convolutional autoencoder that compresses audio into discrete latent codes using <strong>Residual Vector Quantization (RVQ)</strong>.
+            Raw audio is continuous and high-dimensional (44.1kHz). To model it effectively, we use <a href="https://github.com/facebookresearch/encodec" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 transition-colors mx-1" >EnCodec</a>, a convolutional autoencoder that compresses audio into discrete latent codes using <strong>Residual Vector Quantization (RVQ)</strong>.
           </p>
         </div>
-
-        {/* Item 2 */}
         <div>
           <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
             <Zap size={16} />
@@ -88,51 +100,40 @@ const TechnicalInfo = () => (
             The core is a <strong>Decoder-only Transformer</strong>. It predicts the next audio codebook pattern based on the history of previous tokens. By flattening the multi-codebook structure, the model learns melodic structure and acoustic details simultaneously.
           </p>
         </div>
-
-        {/* Item 3 */}
         <div>
           <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
             <Radio size={16} />
             Conditioning & Guidance
           </h4>
           <p className="text-slate-400">
-            Text prompts are embedded using a frozen <strong>T5 Text Encoder</strong>. These embeddings cross-attend with the audio tokens during generation. We utilize <strong>Classifier-Free Guidance (CFG)</strong> to strictly adhere to your prompt.
+            Text prompts are embedded using a frozen <a href="https://ai.googleblog.com/2020/02/exploring-transfer-learning-with-t5.html" target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 transition-colors mx-1" >T5 Text Encoder</a>. These embeddings cross-attend with the audio tokens during generation. We utilize <strong>Classifier-Free Guidance</strong> to strictly adhere to the input prompt.
           </p>
         </div>
-
-        {/* Item 4 */}
         <div>
           <h4 className="flex items-center gap-2 font-semibold text-indigo-400 mb-3">
             <Database size={16} />
-            Large-Scale Training Data
+            Training Data
           </h4>
           <p className="text-slate-400">
-            The model is trained on 20,000 hours of licensed music, allowing it to learn a vast and diverse range of musical genres, instruments, and styles. This extensive dataset is key to its ability to generate high-quality, coherent audio.
+            The model is trained on 20,000 hours of open-source licensed music, allowing it to learn a vast and diverse range of musical genres, instruments, and styles. This extensive dataset is key to its ability to generate high-quality, coherent audio.
           </p>
         </div>
-
       </div>
 
-      {/* --- INFERENCE SPECS SECTION --- */}
       <div className="border-t border-white/5 pt-6">
         <div className="flex items-center gap-2 mb-4 text-xs font-bold text-indigo-400 uppercase tracking-widest">
            <Settings size={14} />
            <span>Technical Specifications</span>
         </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <SpecItem label="Model Architecture" value="MusicGen-Medium (1.5B)" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <SpecItem label="Sampling Rate" value="32,000 Hz" />
           <SpecItem label="Context Window" value="30s Autoregressive" />
           <SpecItem label="Latent Dim" value="d_model = 1024" />
-
           <SpecItem label="Audio Codec" value="EnCodec (4 Codebooks)" />
           <SpecItem label="Attention Heads" value="16 Multi-Head Attn" />
           <SpecItem label="Quantization" value="Residual VQ (RVQ)" />
-          <SpecItem label="Guidance Scale" value="CFG = 3.0" />
         </div>
       </div>
-
     </div>
   </div>
 );
@@ -148,8 +149,8 @@ const WavePlayer = ({ audioBlob, duration }) => {
 
     const ws = WaveSurfer.create({
       container: containerRef.current,
-      waveColor: 'rgba(129, 140, 248, 0.3)', // Indigo-400 faded
-      progressColor: '#818cf8', // Indigo-400
+      waveColor: 'rgba(129, 140, 248, 0.3)',
+      progressColor: '#818cf8',
       cursorColor: '#ffffff',
       barWidth: 3,
       barGap: 3,
@@ -269,45 +270,30 @@ function App() {
 
       <div className="min-h-screen text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200 relative overflow-x-hidden font-sans">
 
-        {/* --- LAYER 1: Solid Background Color --- */}
+        {/* --- LAYERS --- */}
         <div className="fixed inset-0 bg-[#0B1121] -z-50" />
-
-        {/* --- LAYER 2: Moving Blobs --- */}
         <div className="fixed inset-0 overflow-hidden -z-40 pointer-events-none">
-           <div
-             className="blob"
-             style={{ top: '-10%', left: '-10%', width: '600px', height: '600px', backgroundColor: '#4f46e5' }}
-           />
-           <div
-             className="blob"
-             style={{ top: '0%', right: '-20%', width: '700px', height: '700px', backgroundColor: '#0891b2', animationDelay: '2s' }}
-           />
-           <div
-             className="blob"
-             style={{ bottom: '-20%', left: '10%', width: '600px', height: '600px', backgroundColor: '#7c3aed', animationDelay: '5s' }}
-           />
+           <div className="blob" style={{ top: '-10%', left: '-10%', width: '600px', height: '600px', backgroundColor: '#4f46e5' }} />
+           <div className="blob" style={{ top: '0%', right: '-20%', width: '700px', height: '700px', backgroundColor: '#0891b2', animationDelay: '2s' }} />
+           <div className="blob" style={{ bottom: '-20%', left: '10%', width: '600px', height: '600px', backgroundColor: '#7c3aed', animationDelay: '5s' }} />
         </div>
-
-        {/* --- LAYER 3: Cinematic Noise Texture --- */}
         <div className="fixed inset-0 -z-30 opacity-[0.15] mix-blend-overlay pointer-events-none"
              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}>
         </div>
         <div className="fixed inset-0 bg-gradient-to-b from-transparent via-[#0B1121]/80 to-[#0B1121] -z-20"></div>
 
-
-        {/* --- LAYER 4: Main Content --- */}
+        {/* --- MAIN CONTENT --- */}
         <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
 
           <header className="mb-16 text-center relative">
             <div className="inline-block px-3 py-1 mb-4 border border-indigo-400/30 rounded-full bg-indigo-500/10 backdrop-blur-sm shadow-[0_0_20px_rgba(99,102,241,0.2)]">
-              <span className="text-xs font-bold text-indigo-300 tracking-widest uppercase">Generative Audio AI</span>
+              <span className="text-xs font-bold text-indigo-300 tracking-widest uppercase">HPK AI Labs</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight drop-shadow-2xl leading-tight">
-              Text to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Music</span>
+              Acoustic <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Intelligence</span>
             </h1>
             <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed font-light">
-              Generate high-fidelity audio samples conditioned on text descriptions using
-              Meta's <span className="text-white font-medium">MusicGen</span> transformer model.
+              Synthesize <span className="text-white font-medium">studio-grade musical compositions</span> from raw text using residual vector quantization and neural modeling.
             </p>
           </header>
 
@@ -348,9 +334,17 @@ function App() {
                         className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500 relative z-10 group-hover:accent-indigo-400 transition-all"
                       />
                     </div>
-                    <div className="flex justify-between text-[10px] uppercase font-bold text-slate-600 mt-2">
+                    <div className="flex justify-between text-[10px] uppercase font-bold text-slate-600 mt-2 mb-4">
                       <span>1 Sec</span>
                       <span>30 Sec (Max)</span>
+                    </div>
+
+                    {/* --- DURATION INSIGHT MESSAGE --- */}
+                    <div className="flex items-start gap-2 p-3 bg-indigo-500/5 rounded-lg border border-indigo-500/10">
+                      <Info size={14} className="text-indigo-400 shrink-0 mt-0.5" />
+                      <p className="text-[11px] text-indigo-200/60 leading-tight">
+                        Shorter durations maintain higher prompt fidelity and acoustic coherence. Longer tracks may vary in context.
+                      </p>
                     </div>
                   </div>
 
@@ -376,20 +370,27 @@ function App() {
             </div>
 
             <div className="lg:col-span-8 space-y-8">
+
+              {/* --- NEW COOL LOADING ANIMATION --- */}
               {loading && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="glass-panel rounded-2xl p-12 text-center border-dashed border-indigo-400/30 relative overflow-hidden"
+                  className="glass-panel rounded-2xl p-12 text-center border-dashed border-indigo-400/30 relative overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
                 >
                   <div className="absolute top-0 left-0 w-full h-0.5 bg-indigo-400/50 shadow-[0_0_15px_rgba(99,102,241,0.8)] animate-[scan_2s_ease-in-out_infinite]"></div>
 
-                  <div className="relative w-20 h-20 mx-auto mb-8">
-                    <div className="absolute inset-0 border-4 border-slate-800/50 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-indigo-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                  {/* Digital Equalizer Bars */}
+                  <div className="flex items-end gap-1 h-16 mb-8">
+                    <div className="bar h-full"></div>
+                    <div className="bar h-full"></div>
+                    <div className="bar h-full"></div>
+                    <div className="bar h-full"></div>
+                    <div className="bar h-full"></div>
                   </div>
+
                   <h3 className="text-xl font-bold text-white mb-2">Generating Audio Tokens</h3>
-                  <p className="text-slate-500 text-sm mb-6">
+                  <p className="text-slate-500 text-sm">
                     Running autoregressive inference on GPU...
                   </p>
                 </motion.div>
@@ -422,7 +423,7 @@ function App() {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3">Ready to Generate</h3>
                   <p className="text-slate-400 text-base mt-2 max-w-md mx-auto font-light leading-relaxed">
-                    Describe the vibe, genre, or instruments you want to hear. Set the duration, and let the AI compose your track.
+                    Describe the vibe, genre, or instruments you want to hear. Set the duration, and let our AI model compose your track.
                   </p>
                 </div>
               )}
