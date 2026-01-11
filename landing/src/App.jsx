@@ -87,7 +87,7 @@ function App() {
                                 Transformer</h3>
                             <p className="text-sm text-neutral-500 leading-relaxed">
                                 Bring your sonic visions to life by translating descriptive text into professional-tier
-                                high-fidelity audio through neural modeling.
+                                high-fidelity music through neural modeling.
                             </p>
                             <div className="mt-4 flex gap-2">
                                 <span
