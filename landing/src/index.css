@@ -6,3 +6,15 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
 }
+@layer utilities {
+  @keyframes waveform {
+    0%, 100% { transform: scaleY(0.5); opacity: 0.8; }
+    50% { transform: scaleY(1.3); opacity: 1; }
+  }
+
+  .animate-waveform {
+    animation: waveform infinite ease-in-out;
+    transform-origin: center; /* Ensures bars grow up and down from the middle */
+    will-change: transform; /* Optimizes performance */
+  }
+}
