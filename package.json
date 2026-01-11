@@ -3,6 +3,6 @@
   "private": true,
   "scripts": {
     "postinstall": "cd landing && npm install && cd ../musicgen && npm install",
-    "build": "cd landing && npm run build && cd ../musicgen && npm run build && mkdir -p ../landing/dist/musicgen && cp -r dist/* ../landing/dist/musicgen/"
+    "build": "rm -rf landing/dist && cd landing && npm run build && cd ../musicgen && npm run build && mv dist ../landing/dist/musicgen"
   }
 }
