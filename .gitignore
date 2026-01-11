@@ -131,4 +131,6 @@ dist
 .pnp.*
 
 .idea
-
+.python-version
+pyproject.toml
+uv.lock
