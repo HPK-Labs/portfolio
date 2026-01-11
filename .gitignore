@@ -134,3 +134,4 @@ dist
 .python-version
 pyproject.toml
 uv.lock
+*.ipynb

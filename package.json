@@ -1,0 +1,8 @@
+{
+  "name": "portfolio-root",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd landing && npm install && cd ../musicgen && npm install",
+    "build": "cd landing && npm run build && cd ../musicgen && npm run build && mkdir -p ../landing/dist/musicgen && cp -r dist/* ../landing/dist/musicgen/"
+  }
+}
