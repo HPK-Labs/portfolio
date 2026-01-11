@@ -25,14 +25,14 @@ function App() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">Generative Intelligence.</span>
           </h1>
           <p className="text-lg text-neutral-600 max-w-2xl leading-relaxed">
-            A collection of experiments, tools, and research prototypes exploring the capabilities of modern AI architectures.
+            A collection of research prototypes and generative tools exploring the capabilities of modern AI architectures.
           </p>
         </div>
       </header>
 
       {/* Projects Grid */}
       <main className="max-w-5xl mx-auto px-6 py-20">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-8">Selected Projects</h2>
+        <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-8">Projects</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
@@ -44,13 +44,13 @@ function App() {
               <div className="absolute top-[-50%] left-[-10%] w-[150%] h-[150%] bg-blue-600/20 rounded-full blur-3xl"></div>
               <div className="absolute bottom-[-50%] right-[-10%] w-[150%] h-[150%] bg-purple-600/20 rounded-full blur-3xl"></div>
               <span className="text-white font-bold text-xl relative z-10 flex items-center gap-2">
-                 Audio Synthesis <ExternalLink />
+                 Acoustic Intelligence <ExternalLink />
               </span>
             </div>
             <div className="p-6">
-              <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">Text to Music</h3>
+              <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">The Sonic Transformer</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                High-fidelity audio generation using Meta's MusicGen Transformer. Features autoregressive inference and custom visualization.
+                Bring your sonic visions to life by translating descriptive text into professional-tier high-fidelity audio through neural modeling.
               </p>
               <div className="mt-4 flex gap-2">
                 <span className="text-[10px] font-mono bg-neutral-100 px-2 py-1 rounded text-neutral-600">React</span>
