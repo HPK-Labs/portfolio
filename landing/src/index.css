@@ -17,4 +17,11 @@ body {
     transform-origin: center; /* Ensures bars grow up and down from the middle */
     will-change: transform; /* Optimizes performance */
   }
+
+  @keyframes scan {
+  0% { left: 0%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
 }

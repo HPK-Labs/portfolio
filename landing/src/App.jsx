@@ -47,7 +47,6 @@ function App() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                     {/* --- MUSICGEN CARD --- */}
-                    {/* --- MUSICGEN CARD --- */}
                     <a href="/musicgen/"
                        className="group block bg-white border border-neutral-200 rounded-xl overflow-hidden hover:shadow-2xl hover:border-neutral-300 transition-all duration-500 transform hover:-translate-y-1">
                         <div className="h-48 bg-[#0f172a] relative overflow-hidden flex items-center justify-center">
@@ -96,6 +95,41 @@ function App() {
                                     className="text-[10px] font-mono bg-neutral-100 px-2 py-1 rounded text-neutral-600">ONNX</span>
                                 <span
                                     className="text-[10px] font-mono bg-neutral-100 px-2 py-1 rounded text-neutral-600">FastAPI</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    {/* --- BG REMOVER CARD --- */}
+                    <a href="/bg_remover/"
+                       className="group block bg-white border border-neutral-200 rounded-xl overflow-hidden hover:shadow-2xl hover:border-neutral-300 transition-all duration-500 transform hover:-translate-y-1">
+                        <div className="h-48 bg-[#09090b] relative overflow-hidden flex items-center justify-center">
+
+                            {/* Grid Pattern Background to signify Transparency */}
+                            <div className="absolute inset-0 opacity-20" style={{
+                                backgroundImage: 'linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333)',
+                                backgroundSize: '20px 20px',
+                                backgroundPosition: '0 0, 10px 10px'
+                            }}></div>
+
+                            {/* Animated Scan Line */}
+                            <div
+                                className="absolute top-0 bottom-0 w-0.5 bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)] animate-[scan_3s_ease-in-out_infinite]"></div>
+
+                            <span
+                                className="text-white font-bold text-xl relative z-10 flex items-center gap-2 drop-shadow-md">Vision Processing <ExternalLink/></span>
+                        </div>
+                        <div className="p-6">
+                            <h3 className="font-bold text-lg mb-2 group-hover:text-cyan-600 transition-colors">Background
+                                Elimination</h3>
+                            <p className="text-sm text-neutral-500 leading-relaxed">
+                                Remove backgrounds instantly using U2NET and IS-Net architectures. Features
+                                high-precision edge detection and privacy-first processing.
+                            </p>
+                            <div className="mt-4 flex gap-2">
+                                <span
+                                    className="text-[10px] font-mono bg-neutral-100 px-2 py-1 rounded text-neutral-600">Gradio</span>
+                                <span
+                                    className="text-[10px] font-mono bg-neutral-100 px-2 py-1 rounded text-neutral-600">Computer Vision</span>
                             </div>
                         </div>
                     </a>
