@@ -3,6 +3,6 @@
   "private": true,
   "scripts": {
     "postinstall": "npm install --prefix landing && npm install --prefix musicgen && npm install --prefix bg_remover",
-    "build": "rm -rf landing/dist && npm run build --prefix landing && npm run build --prefix musicgen && npm run build --prefix bg_remover && mv musicgen/dist landing/dist/musicgen && mv bg_remover/dist landing/dist/bg_remover && cp landing/public/logo.png landing/dist/musicgen/logo.png && cp landing/public/logo.png landing/dist/bg_remover/logo.png"
+    "build": "rm -rf landing/dist && npm run build --prefix landing && npm run build --prefix musicgen && npm run build --prefix bg_remover && mv musicgen/dist landing/dist/musicgen && mv bg_remover/dist landing/dist/bg_remover && cp landing/public/logo.png landing/dist/musicgen/logo.png && cp landing/public/logo_full.png landing/dist/bg_remover/logo_full.png && cp landing/public/logo.png landing/dist/bg_remover/logo.png"
   }
 }

@@ -15,8 +15,8 @@ const HF_SPACE = "KenjieDec/RemBG";
 const MODELS = [
   {
     id: 'bria-rmbg',
-    name: 'Detail Pro',
-    desc: 'Best for complex edges like hair, fur, and transparency.',
+    name: 'Vision Ultra',
+    desc: 'Professional-grade isolation for complex edges like hair, fur, and transparency.',
     icon: <Sparkles size={16} className="text-amber-500" />,
     badge: 'Recommended',
     latency: 'Latency 30s' // New property for UI feedback
@@ -247,22 +247,21 @@ return (
       </div>
 
       {/* --- PINNED NAVIGATION BAR --- */}
-<nav className="fixed top-0 left-0 right-0 z-[100] border-b border-white/40 bg-white/70 backdrop-blur shadow-sm transition-all duration-300">
+<nav className="fixed top-0 left-0 right-0 z-[100] border-b border-white/40 bg-white/70 backdrop-blur-md shadow-sm transition-all duration-300">
   <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <div className="bg-gradient-to-br from-blue-600 to-violet-600 text-white p-1.5 rounded-lg shadow-md">
-        <Layers size={20} />
+    <div className="flex items-center gap-4">
+                <div className="relative flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+                <div className="absolute inset-0 bg-blue-400/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                <img src="./logo_full.png" alt="HPK AI Labs" className="h-12 w-auto object-contain relative z-10"/>
+            </div>
+      <div className="flex flex-col">
+                        <span className="font-black text-xl tracking-tight text-slate-900 leading-none">
+                    HPK AI LABS
+                </span>
+        <span className="text-[11px] tracking-[0.1em] font-bold text-slate-400">DeepMask AI</span>
       </div>
-      <span className="font-bold text-lg tracking-tight text-slate-900">
-        ClearCut<span className="text-blue-600">.ai</span>
-      </span>
     </div>
-
-    {/* Standard HTML Anchor for cross-project navigation */}
-    <a
-      href="../index.html"
-      className="group flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors bg-white/50 border border-white/60 hover:bg-blue-50 hover:border-blue-100 px-3 py-1.5 rounded-full shadow-sm"
-    >
+    <a href="/" className="group flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors bg-white/50 border border-white/60 hover:bg-blue-50 hover:border-blue-100 px-3 py-1.5 rounded-full shadow-sm">
       Back to Portfolio <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
     </a>
   </div>
@@ -270,7 +269,7 @@ return (
 
 
       {/* Added pt-16 (padding-top) to main so content doesn't start underneath the pinned nav */}
-      <main className="max-w-7xl mx-auto px-6 py-16 pt-32 relative z-10">
+      <main className="max-w-7xl mx-auto px-6 pt-32 relative z-10">
 
         <header className="text-center mb-20 relative">
           <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-blue-50/80 border border-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest shadow-sm hover:shadow-md transition-shadow cursor-default backdrop-blur-sm">
@@ -284,7 +283,7 @@ return (
           </h1>
 
           <p className="text-slate-600 max-w-2xl mx-auto text-lg font-light leading-relaxed animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            Isolate subjects with sub-pixel accuracy using industrial-grade semantic segmentation architectures.
+            Advanced background removal. Zero artifacts. Total creative control.
           </p>
         </header>
 
@@ -484,36 +483,66 @@ return (
             <div>
               <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
                 <Cpu size={20} className="text-blue-600" />
-                Network Architecture
+                Model Architecture
               </h3>
-              <p className="text-slate-600 text-sm leading-relaxed mb-6">
-                Our inference engine utilizes <strong>U²-Net</strong> and <strong>IS-Net</strong> architectures, which leverage nested U-structures for state-of-the-art salient object detection (SOD). This multi-scale feature extraction allows for the isolation of complex foreground structures without high-dimensional computational overhead.
-              </p>
+<p className="text-slate-600 text-sm leading-relaxed mb-6">
+  Our inference engine utilizes fine-tuned versions of{" "}
+  <a
+    href="https://arxiv.org/abs/2005.09007"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-600 font-bold hover:text-violet-600 transition-colors duration-300 border-b border-blue-200 hover:border-violet-300 pb-0.5"
+  >
+    U2Net
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://arxiv.org/abs/2108.12382"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-600 font-bold hover:text-violet-600 transition-colors duration-300 border-b border-blue-200 hover:border-violet-300 pb-0.5"
+  >
+    ISNet
+  </a>{" "}
+  architectures, which leverage nested U-structures for
+  state-of-the-art <strong>salient object detection (SOD)</strong>. This multi-scale feature
+  extraction allows for the isolation of complex foreground structures without
+  high-dimensional computational overhead.
+</p>
               <p className="text-slate-600 text-sm leading-relaxed">
-                The <strong>BRIA RMBG</strong> integration further enhances edge-case processing, specifically tuned for sub-pixel boundary refinement in high-frequency regions like hair and semi-transparent fibers.
+                The <strong>Vision Ultra</strong> integration further enhances edge-case processing, specifically fine-tuned for sub-pixel boundary refinement in high-frequency regions like hair and semi-transparent fibers.
               </p>
             </div>
             <div>
                <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <Lock size={20} className="text-blue-600" />
-                Ephemeral Security Protocol
+                <Lock size={20} className="text-blue-600" />Security Protocol
               </h3>
                <p className="text-neutral-600 text-sm leading-relaxed mb-6">
-                ClearCut.ai implements a <strong>Zero-Persistence</strong> security model. All image processing occurs in transient virtual memory on temporary inference nodes.
+                We implement a <strong>Zero-Persistence</strong> security model. All image processing occurs in transient virtual memory.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2 text-sm text-neutral-600">
                   <Server size={16} className="text-blue-500 mt-0.5 shrink-0" />
-                  <span><strong>Stateless Processing:</strong> Assets are automatically purged from runtime buffers immediately after the RGBA payload is delivered to the client.</span>
+                  <span><strong>Stateless Processing:</strong> Images are automatically purged from runtime buffers immediately after the RGBA payload is delivered to the client.</span>
                 </li>
                 <li className="flex items-start gap-2 text-sm text-neutral-600">
                   <ShieldCheck size={16} className="text-blue-500 mt-0.5 shrink-0" />
-                  <span><strong>Encrypted Transit:</strong> All payloads are transmitted via TLS 1.3 to ensure end-to-end data integrity between the browser and our GPU clusters.</span>
+                  <span><strong>Encrypted Transit:</strong> All payloads are transmitted via TLS 1.3 to ensure end-to-end data integrity between the browser and our cluster.</span>
                 </li>
               </ul>
             </div>
           </div>
         </section>
+        <footer className="mt-20 pb-8 border-t border-slate-200/100 pt-8 text-center relative z-10">
+            <div className="flex flex-col items-center gap-3">
+                {/* Optional: Small grayscale logo for a subtle brand reminder */}
+                <img src="./logo_full.png" alt="HPK AI Labs Logo" className="h-14 w-auto" />
+
+                    <p className="text-neutral-400 text-sm">
+                        &copy; {new Date().getFullYear()} <strong>HPK AI Labs.</strong> All rights reserved.
+                    </p>
+            </div>
+        </footer>
       </main>
     </div>
   );

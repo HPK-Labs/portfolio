@@ -4,24 +4,135 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #ffffff;
+  color: #0f172a; /* Slate-900 */
+  overflow-x: hidden; /* Prevent horizontal scroll from blobs */
 }
+
 @layer utilities {
+  /* --- BACKGROUND ANIMATION (The "Moving Mesh") --- */
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  /* --- EXISTING CARD ANIMATIONS --- */
   @keyframes waveform {
     0%, 100% { transform: scaleY(0.5); opacity: 0.8; }
     50% { transform: scaleY(1.3); opacity: 1; }
   }
 
-  .animate-waveform {
-    animation: waveform infinite ease-in-out;
-    transform-origin: center; /* Ensures bars grow up and down from the middle */
-    will-change: transform; /* Optimizes performance */
+  @keyframes mask-wipe-reveal {
+    0%, 15% { clip-path: inset(0 0 0 0); }
+    50%, 65% { clip-path: inset(0 0 0 100%); }
+    100% { clip-path: inset(0 0 0 0); }
   }
 
-  @keyframes scan {
-  0% { left: 0%; opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
-}
+  @keyframes slider-move {
+    0%, 15% { left: 0%; opacity: 0; }
+    16% { opacity: 1; }
+    50%, 65% { left: 100%; opacity: 1; }
+    66% { opacity: 0; }
+    100% { left: 0%; opacity: 0; }
+  }
+
+  @keyframes dog-pant {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-1px) scale(1.01); }
+  }
+
+  .animate-waveform { animation: waveform infinite ease-in-out; transform-origin: center; will-change: transform; }
+  .animate-mask-wipe { animation: mask-wipe-reveal 6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+  .animate-slider-bar { animation: slider-move 6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+  .animate-dog-life { animation: dog-pant 3s ease-in-out infinite; }
+
+  /* NEW: Subtle Pulse for the Coming Soon Icon */
+  @keyframes pulse-subtle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.95); }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+
+  /* 1. SINE WAVE ANIMATION (Liquid Sound) */
+  /* Moves the background position of a wave SVG to simulate flow */
+  @keyframes wave-flow {
+    0% { transform: translateX(0) translateZ(0) scaleY(1); }
+    50% { transform: translateX(-25%) translateZ(0) scaleY(0.8); }
+    100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+  }
+
+  /* 2. TYPING EFFECT */
+  /* Reveals text character by character */
+  @keyframes type-reveal {
+    0%, 10% { width: 0%; opacity: 1; }
+    70%, 90% { width: 100%; opacity: 1; }
+    100% { width: 100%; opacity: 0; } /* Fade out to loop */
+  }
+
+  /* 3. PARTICLE RISE (Data -> Music) */
+  @keyframes particle-rise {
+    0% { transform: translateY(0) scale(0); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(-60px) scale(1); opacity: 0; }
+  }
+
+  .animate-wave-flow {
+    animation: wave-flow 4s linear infinite;
+  }
+  .animate-type {
+    animation: type-reveal 4s steps(20, end) infinite;
+  }
+  .animate-particle {
+    animation: particle-rise 2s ease-out infinite;
+  }
+
+  /* NEW: The "Harmonic Filament" Flow */
+  /* This moves a long SVG pattern smoothly to the left */
+  @keyframes filament-flow {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-filament-flow {
+    animation: filament-flow 10s linear infinite;
+  }
+
+  /* Make the glow pulsate slightly with the music beat */
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.0; filter: brightness(0.0); }
+    50% { opacity: 0; filter: brightness(0.0); }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes optical-flow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  .animate-optical-flow {
+    background-size: 200% auto; /* Matches your CSS */
+    animation: optical-flow 3s linear infinite reverse; /* Continuous loop */
+  }
+
 }
