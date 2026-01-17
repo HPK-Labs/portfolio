@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, black 50%, transparent 100%);
+  }
+
+  .bg-checkered {
+    background-color: #ffffff;
+    background-image:
+      linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+      linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+      linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+
+  /* FIXED: High-Transparency Glass */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.25); /* Much lower opacity */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Animations that don't need Tailwind config */
+@keyframes focus-reveal {
+  0% { filter: blur(15px); opacity: 0; transform: scale(0.95); letter-spacing: 0.1em; }
+  100% { filter: blur(0px); opacity: 1; transform: scale(1); letter-spacing: normal; }
+}
+
+@keyframes shimmer-slow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes scanline {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-optical-focus {
+  animation: focus-reveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  background: linear-gradient(to right, #2563eb, #7c3aed, #06b6d4, #2563eb);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.shimmer-text { animation: shimmer-slow 4s linear infinite; }
+
+.animate-scanline {
+  animation: scanline 2.5s linear infinite;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
